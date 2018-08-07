@@ -1,0 +1,29 @@
+本人使用的是mac+xampp环境，所以本笔记记录为，如下
+1、mac的mongodb的安装
+2、php7的mongodb的扩展安装
+3、tp5的mongodb扩展安装
+4、tp5mysql+mongodb一起使用的笔记
+
+一、mac的mongodb的安装
+正常情况下，sudo brew install mongodb可以直接安装，注意，如果机子系统太低，ssl不支持姐解决如下
+  （1）brew search mongodb,查询较旧mongodb
+  （2）brew search mongodb @3.4，我版本较低直接安装3.4
+  （3）进入mongodb/bin目录启动mongodb，sudo ./mongod
+
+二、xampp,php7的mongodb的扩展安装
+   (1)从mongodb官方git上下载 mongodb for php driver 
+   (2)git clone https://github.com/mongodb/mongo-php-driver.git 
+   (3)安装扩展
+   (4)sudo /Applications/XAMPP/xamppfiles/bin/phpize
+   (5)./configure –with-php-config=/applications/xampp/xamppfiles/bin/php-config
+   (6)sudo make && sudo make install
+   (7)extension=mongodb.so
+
+三、tp5的mongodb扩展安装
+   (1)如果有composer请忽略下面2、3步
+   (2)使用 curl 指令下载，curl -sS https://getcomposer.org/installer | php
+   (3)将composer 成为全域命令mv composer.phar /usr/local/bin/composer
+   (4)安装tp mongodb 扩展 composer require topthink/think-mongo=1.*
+
+四、tp5mysql+mongodb一起使用的笔记
+  
