@@ -1,0 +1,41 @@
+一、链接mongodb(mongo 127.0.0.1/test)
+二、db语句
+ 选择数据库：use test1
+ 查看数据：db.test1.find()
+ 插入数据：db.test1.insert({“name”:”test1”,”age”:”123”})
+ 更新数据：db.test.update({name:”test1”},{$set:{name:”test2”})
+ 更新多条数据：db.aji.update({name:"aji2"},{$set:{age:88}},false,true)
+ 删除数据：db.aji.remove({name:"aji6"})
+ 查看索引：db.aji.getIndexes();
+ 删除索引：db.aji.dropIndex(“new_content”) //里面放索引名
+ 强制使用索引：db.aji.find().hint(“m_1”)
+ 创建单键索引：db.aji.ensureIndex({name:1}),注意这个索引用于排序用个，1代表正向排序，从小到大，-1代表负向排序，从大到小
+ 创建复合索引：db.aji.ensureIndex({name:[1,2,3,4,5,6]}),name为字段名
+ 过期索引：db.aji.ensureIndex({time:1},{expireAfterSeconds:30})，time为字段名。只支持IOSDate存储方式。新建方法：db.aji.insert(“time”:new Date())
+ 全文索引单个：db.aji.ensureIndex({content:”text”})，content为字段名，text固定的
+ 全文索引多个：db.aji.ensureIndex({content:”text,”content1”,”text”}),content和content都是字段名
+ 全面索引定义整个集合：db.aji.ensure({“$**”:”text”})
+ 全文索引查询：
+   (1)db.aji.find({$test:{$search:”aa”}}) //查询包含aa的内容。如果多个则每个关键词用空格隔开,or的查询方式
+   (2)db.aji.find({$test:{$search:”aa bb -cc”}}) -cc意思是查询不包括cc，这行意思说包含aa,bb可不括cc
+   (3)db.aji.find($test:{$search:”/”aa/” /“bb/””})//查询包含aa的内容。如果多个则每个关键词用空格隔开,and的查询方式
+   (4)db.aji.find($test:{$search:”aa bb”},{score:{$meta:”textScore”}),查询包含的相似度，联合sort更佳
+   (5)db.aji.find($test:{$search:”aa bb”},{score:”{$meta:”textScore”}”}).sort({score:{$meta:”textScore”}})
+ 重明名索引名称：db.aji.ensureIndex(“content”:”1”,{name:”new_content”})
+ 唯一索引：db.aji.ensureIndex({“name”:1},{unique:true/false})
+ 稀疏索引：db.aji.ensureIndex({”name”:1“},{sparse:true})
+ 地理索引：
+  (1)建立2d索引
+	db.aji.ensureIndex({w:'2d'})
+        位置表示方式：经纬度【经度，维度】
+        取值范围：经度【-180,180】纬度【-90,90】
+        例如：db.aji.insert({w:[180,90]})
+  (2)查询2d索引
+  db.aji.find({w:{$geoWithin:{$box:[[0,0],[3,3]]}}}) #左边界，右边界，矩形查找
+  db.aji.find({w:{$geoWithin:{$center:[[0,0],5]}}}) # 圆心，半径，圆形查找
+  db.aji.find({w:{$geoWithin:{$polygon:[[0,0],[0,1],[2,5],[7,8]]}}}) #多边形
+  (3)查询集合
+  db.runCommand({getNear:‘aji’,near:[x,y],minDistance:(对2d索引无效),maxDistance:num:1)}
+  
+  mongdostat查看mongodb的效果：mongostat -h 127.0.0.1:28018
+  
